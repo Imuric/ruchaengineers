@@ -56,6 +56,8 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -64,6 +66,7 @@ body {
   background: var(--cream);
   line-height: 1.6;
   overflow-x: hidden;
+  width: 100%;
 }
 
 /* Page inner bg for non-hero sections */
@@ -1011,6 +1014,7 @@ a {
   font-size: 0.9375rem;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.6;
+  word-break: break-word;
 }
 
 .contact-form {
@@ -1019,6 +1023,20 @@ a {
   padding: var(--space-2xl);
   border: 1px solid var(--border);
   height: 100%;
+}
+
+@media (max-width: 768px) {
+  .contact-info-block,
+  .contact-form {
+    padding: var(--space-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-info-block,
+  .contact-form {
+    padding: var(--space-md);
+  }
 }
 
 .form-row {
