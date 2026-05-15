@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ScrollReveal from '../../components/ScrollReveal';
+import Link from 'next/link';
 import { Box, Package, Settings } from 'lucide-react';
 import { products, successStories } from '../../lib/data';
 
@@ -45,8 +46,9 @@ export default function ProductsPage() {
                     <div className="products-grid">
                         {products.map((product, i) => (
                             <ScrollReveal delay={i * 60} key={i}>
-                                <div className="product-card">
-                                    {/* Visual placeholder with SVG icon */}
+                                <Link href={`/products/${product.slug}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                                    <div className="product-card">
+                                        {/* Visual placeholder with SVG icon */}
                                     <div className="product-card__img" style={{
                                         background: `linear-gradient(135deg, var(--cream-dark) 0%, var(--cream) 100%)`,
                                         flexDirection: 'column', gap: '0.5rem',
@@ -82,7 +84,8 @@ export default function ProductsPage() {
                                         </div>
                                         <p className="product-card__dim">Dimension: {product.dimension}</p>
                                     </div>
-                                </div>
+                                    </div>
+                                </Link>
                             </ScrollReveal>
                         ))}
                     </div>
@@ -106,7 +109,8 @@ export default function ProductsPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
                         {successStories.map((story, i) => (
                             <ScrollReveal delay={i * 120} key={i}>
-                                <div style={{
+                                <Link href={`/success-stories/${story.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+                                    <div style={{
                                     background: 'var(--navy)',
                                     borderRadius: 'var(--radius-xl)',
                                     padding: '2rem',
@@ -150,7 +154,8 @@ export default function ProductsPage() {
                                             {story.description}
                                         </p>
                                     </div>
-                                </div>
+                                    </div>
+                                </Link>
                             </ScrollReveal>
                         ))}
                     </div>

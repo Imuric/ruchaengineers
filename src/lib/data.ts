@@ -137,27 +137,30 @@ export const customers = [
 ];
 
 export const products = [
-    { name: 'Wooden Pattern Bowl', dimension: '1200 mm × 1500 mm', category: 'Wooden Pattern' },
-    { name: 'Packaging Foam Die', dimension: '1500 mm × 1500 mm', category: 'Foam Die' },
-    { name: 'Impeller', dimension: '1500 mm × 1500 mm', category: 'Casting' },
-    { name: 'Loss Foam Die', dimension: '1200 mm × 700 mm', category: 'Foam Die' },
-    { name: 'Tooth Points', dimension: '400 mm × 150 mm', category: 'Casting' },
-    { name: 'Casing', dimension: '1200 mm × 1200 mm', category: 'Casting' },
-    { name: 'Impeller', dimension: '1000 mm', category: 'Casting' },
-    { name: 'Loss Foam Mixer Cover Die', dimension: '1000 mm × 1000 mm', category: 'Foam Die' },
-    { name: 'Pump Casing', dimension: '600 mm × 1200 mm', category: 'Casting' },
+    { slug: 'wooden-pattern-bowl', name: 'Wooden Pattern Bowl', dimension: '1200 mm × 1500 mm', category: 'Wooden Pattern' },
+    { slug: 'packaging-foam-die', name: 'Packaging Foam Die', dimension: '1500 mm × 1500 mm', category: 'Foam Die' },
+    { slug: 'impeller-1500', name: 'Impeller', dimension: '1500 mm × 1500 mm', category: 'Casting' },
+    { slug: 'loss-foam-die', name: 'Loss Foam Die', dimension: '1200 mm × 700 mm', category: 'Foam Die' },
+    { slug: 'tooth-points', name: 'Tooth Points', dimension: '400 mm × 150 mm', category: 'Casting' },
+    { slug: 'casing', name: 'Casing', dimension: '1200 mm × 1200 mm', category: 'Casting' },
+    { slug: 'impeller-1000', name: 'Impeller', dimension: '1000 mm', category: 'Casting' },
+    { slug: 'loss-foam-mixer-cover-die', name: 'Loss Foam Mixer Cover Die', dimension: '1000 mm × 1000 mm', category: 'Foam Die' },
+    { slug: 'pump-casing', name: 'Pump Casing', dimension: '600 mm × 1200 mm', category: 'Casting' },
 ];
 
 export const successStories = [
     {
+        slug: 'chhatrapati-shivaji-maharaj-statue',
         name: 'Chhatrapati Shivaji Maharaj Statue',
         description: 'Total height: 21 feet. Thermocol Chhatrapati Shivaji Raje Bhosale (Maharaj) Statue for our customer.',
     },
     {
+        slug: 'gautam-buddha-statue',
         name: 'Gautam Buddha Statue',
         description: 'Total height 35 feet Thermocol Gautam Buddha Statue for our customer.',
     },
     {
+        slug: 'mona-lisa-statue',
         name: 'Mona Lisa Statue',
         description: 'Total height 16 feet Thermocol Mona Lisa Statue for our customer.',
     },
@@ -165,31 +168,37 @@ export const successStories = [
 
 export const caseStudies = [
     {
+        slug: 'aluminium-pattern-core-box-7-day-delivery',
         number: 'One',
         title: 'Aluminium Pattern & Core Box – 7-Day Delivery',
         body: 'This aluminium pattern and core box (5 sets) were successfully manufactured within just 7 days, demonstrating our commitment to meeting the urgent requirements of our valued customer.',
     },
     {
+        slug: 'integral-pattern-sg-grade-high-pressure-line',
         number: 'Two',
         title: 'Integral Pattern – SG Grade, High-Pressure Line',
         body: 'We successfully delivered an integral pattern in SG grade material for a high-pressure line, validated by a 3D scan report to ensure precision, durability, and high-performance standards.',
     },
     {
+        slug: 'large-aluminium-pattern-pump-casing',
         number: 'Three',
         title: 'Large Aluminium Pattern – Pump Casing',
         body: 'We successfully manufactured a large-sized aluminium pattern for a pump casing, demonstrating our expertise in delivering high-quality, precision-engineered solutions for our clients.',
     },
     {
+        slug: 'large-bowl-support-pattern-wooden-material',
         number: 'Four',
         title: 'Large Bowl Support Pattern – Wooden Material',
         body: 'We successfully delivered a large-sized bowl support pattern in wooden material, showcasing our capability to handle complex, high-precision projects and meet stringent customer requirements with quality craftsmanship.',
     },
     {
+        slug: 'gun-metal-pattern-with-integral-lettering',
         number: 'Five',
         title: 'Gun Metal Pattern with Integral Lettering',
         body: 'We successfully manufactured a gun metal pattern with integral lettering, ensuring high precision, durability, and superior quality for our valued customer.',
     },
     {
+        slug: 'bigger-sized-patterns-teak-jungle-wood',
         number: 'Six',
         title: 'Bigger-Sized Patterns – Teak & Jungle Wood',
         body: 'We successfully delivered bigger-sized patterns made from teak wood and jungle wood, meeting the customer\'s precise requirements with high-quality craftsmanship.',

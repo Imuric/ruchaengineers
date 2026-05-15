@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     type: 'website',
     url: 'https://www.ruchaengineers.com',
   },
+  icons: {
+    icon: '/logo-icon.svg',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

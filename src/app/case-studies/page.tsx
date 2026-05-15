@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ScrollReveal from '../../components/ScrollReveal';
+import Link from 'next/link';
 import { caseStudies } from '../../lib/data';
 
 export const metadata: Metadata = {
@@ -37,8 +38,9 @@ export default function CaseStudiesPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                         {caseStudies.map((cs, i) => (
                             <ScrollReveal delay={i * 80} key={i}>
-                                <div 
-                                    className="case-study-row"
+                                <Link href={`/case-studies/${cs.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+                                    <div 
+                                        className="case-study-row"
                                     style={{
                                         display: 'grid',
                                         gridTemplateColumns: i % 2 === 0 ? 'auto 1fr' : '1fr auto',
@@ -100,7 +102,8 @@ export default function CaseStudiesPage() {
                                             {cs.body}
                                         </p>
                                     </div>
-                                </div>
+                                    </div>
+                                </Link>
                             </ScrollReveal>
                         ))}
                     </div>

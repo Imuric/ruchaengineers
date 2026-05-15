@@ -152,14 +152,16 @@ export default function HomePage() {
           <div className="case-grid" style={{ marginBottom: '2.5rem' }}>
             {caseStudies.slice(0, 4).map((cs, i) => (
               <ScrollReveal delay={i * 100} key={i}>
-                <div className="case-card" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <div className="case-card__num" style={{ color: 'rgba(255,255,255,0.06)' }}>{cs.number}</div>
-                  <div className="case-card__title">{`Case Study ${cs.number}`}</div>
-                  <h4 style={{ color: 'var(--white)', fontFamily: 'var(--font-display)', marginBottom: '0.75rem', fontSize: '1rem' }}>
-                    {cs.title}
-                  </h4>
-                  <p className="case-card__body" style={{ color: 'rgba(255,255,255,0.55)' }}>{cs.body}</p>
-                </div>
+                <Link href={`/case-studies/${cs.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+                  <div className="case-card" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                    <div className="case-card__num" style={{ color: 'rgba(255,255,255,0.06)' }}>{cs.number}</div>
+                    <div className="case-card__title">{`Case Study ${cs.number}`}</div>
+                    <h4 style={{ color: 'var(--white)', fontFamily: 'var(--font-display)', marginBottom: '0.75rem', fontSize: '1rem' }}>
+                      {cs.title}
+                    </h4>
+                    <p className="case-card__body" style={{ color: 'rgba(255,255,255,0.55)' }}>{cs.body}</p>
+                  </div>
+                </Link>
               </ScrollReveal>
             ))}
           </div>
