@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Trophy, Package, Box, Settings, Cpu, Factory, Phone } from 'lucide-react';
 import ClientMarquee from '../components/ClientMarquee';
 import ScrollReveal from '../components/ScrollReveal';
+import TestimonialCarousel from '../components/TestimonialCarousel';
 import {
   company,
   coreBusinessItems,
@@ -9,6 +10,7 @@ import {
   competitiveAdvantages,
   stats,
   caseStudies,
+  testimonials,
 } from '../lib/data';
 
 export default function HomePage() {
@@ -169,6 +171,26 @@ export default function HomePage() {
           <div style={{ textAlign: 'center' }}>
             <Link href="/case-studies" className="btn btn-ghost">See All Case Studies</Link>
           </div>
+        </div>
+      </section>
+
+      {/* ───── TESTIMONIALS ───── */}
+      <section className="section page-bg">
+        <div className="container">
+          <ScrollReveal>
+            <div className="section-header section-header--center">
+              <span className="label">Testimonials</span>
+              <div className="divider divider--center" />
+              <h2 className="section-title">What Our Clients Say</h2>
+              <p className="section-subtitle">
+                Trusted by foundries and heavy engineering companies across India and USA.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal delay={100}>
+            <TestimonialCarousel />
+          </ScrollReveal>
         </div>
       </section>
 

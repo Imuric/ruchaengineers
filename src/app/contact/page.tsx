@@ -1,25 +1,147 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ScrollReveal from '../../components/ScrollReveal';
 import { addresses, contacts, company } from '../../lib/data';
 import { Phone, Briefcase, MapPin, Clock, Globe, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
+import PhoneInput, { isValidPhoneNumber, getCountryCallingCode } from 'react-phone-number-input';
+import flags from 'react-phone-number-input/flags';
+import { getExampleNumber } from 'libphonenumber-js';
+import examples from 'libphonenumber-js/examples.mobile.json';
+import 'react-phone-number-input/style.css';
 
 export default function ContactPage() {
     const [form, setForm] = useState({
-        name: '', company: '', email: '', phone: '', subject: '', message: '',
+        firstName: '', lastName: '', company: '', email: '', phone: '', subject: '', message: '',
     });
     const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+    const [phoneCountry, setPhoneCountry] = useState('IN');
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    // Calculate dynamic placeholder (e.g. XXXXX XXXXX)
+    let phonePlaceholder = 'Phone number';
+    let inputMaxLength: number | undefined = undefined;
+    
+    if (phoneCountry) {
+        try {
+            const ex = getExampleNumber(phoneCountry as any, examples as any);
+            if (ex) {
+                const intl = ex.formatInternational();
+                const cc = '+' + ex.countryCallingCode;
+                phonePlaceholder = intl.replace(cc, '').trim().replace(/\d/g, 'X');
+                inputMaxLength = phonePlaceholder.length;
+            }
+        } catch (e) {
+            // fallback
+        }
+    }
+
+    // Custom Country Select Dropdown
+    const CountrySelect = ({ value, onChange, options }: any) => {
+        useEffect(() => {
+            const handleClickOutside = (e: MouseEvent) => {
+                if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                    setIsDropdownOpen(false);
+                }
+            };
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }, []);
+
+        return (
+            <div ref={dropdownRef} style={{ position: 'relative', display: 'flex', alignItems: 'center', height: '100%' }}>
+                <div 
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', height: '100%', padding: '0 0.75rem', background: 'var(--cream)', borderTopLeftRadius: 'var(--radius-md)', borderBottomLeftRadius: 'var(--radius-md)', borderRight: '1.5px solid var(--border)' }}
+                >
+                    <span style={{ fontSize: '0.95rem', color: 'var(--navy)', fontWeight: 500, fontFamily: 'var(--font-mono)' }}>
+                        {value ? `(+${getCountryCallingCode(value)})` : 'Code'}
+                    </span>
+                    <div className="PhoneInputCountrySelectArrow" style={{ marginLeft: '0.5rem', transform: isDropdownOpen ? 'rotate(-135deg)' : 'rotate(45deg)', transition: 'transform 0.2s' }} />
+                </div>
+
+                {isDropdownOpen && (
+                    <ul style={{ 
+                        position: 'absolute', top: '100%', left: 0, width: '320px', maxHeight: '300px', overflowY: 'auto', 
+                        background: '#fff', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', 
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)', zIndex: 100, listStyle: 'none', padding: 0, margin: '0.5rem 0 0 0'
+                    }}>
+                        {options.map((option: any) => {
+                            if (!option.value) return null;
+                            const Flag = flags[option.value as keyof typeof flags];
+                            return (
+                                <li 
+                                    key={option.value}
+                                    onClick={() => {
+                                        onChange(option.value);
+                                        setPhoneCountry(option.value);
+                                        setIsDropdownOpen(false);
+                                    }}
+                                    style={{
+                                        padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer',
+                                        background: value === option.value ? 'var(--orange-pale)' : 'transparent',
+                                        borderBottom: '1px solid var(--border)'
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--cream)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.background = value === option.value ? 'var(--orange-pale)' : 'transparent'}
+                                >
+                                    {Flag && <div style={{ width: '24px', height: '16px', display: 'flex', border: '1px solid #e2e8f0', overflow: 'hidden' }}><Flag /></div>}
+                                    <span style={{ flex: 1, color: 'var(--navy)', fontSize: '0.9rem' }}>{option.label}</span>
+                                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)' }}>(+{getCountryCallingCode(option.value)})</span>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+            </div>
+        );
     };
 
-    const handleSubmit = async (e: React.MouseEvent) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        
+        let processedValue = value;
+        // Auto-capitalize first letter of every word for First Name and Last Name
+        if (name === 'firstName' || name === 'lastName') {
+            processedValue = value.replace(/\b\w/g, char => char.toUpperCase());
+        }
+
+        setForm(prev => ({ ...prev, [name]: processedValue }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!form.name || !form.email || !form.message) {
+
+        // 1. Sanitization: Trim all inputs to remove leading/trailing spaces
+        const sanitizedForm = {
+            firstName: form.firstName.trim(),
+            lastName: form.lastName.trim(),
+            company: form.company.trim(),
+            email: form.email.trim(),
+            phone: form.phone ? form.phone.trim() : '',
+            subject: form.subject,
+            message: form.message.trim(),
+        };
+
+        // 2. Validation: Required fields
+        if (!sanitizedForm.firstName || !sanitizedForm.lastName || !sanitizedForm.email || !sanitizedForm.phone || !sanitizedForm.message) {
             alert('Please fill in all required fields.');
             return;
         }
+
+        // 3. Validation: Strict Email Format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(sanitizedForm.email)) {
+            alert('Please enter a valid email address.');
+            return;
+        }
+
+        // 4. Validation: Strict Phone format using react-phone-number-input
+        if (sanitizedForm.phone && !isValidPhoneNumber(sanitizedForm.phone)) {
+            alert('Please enter a valid phone number for the selected country.');
+            return;
+        }
+
         setStatus('sending');
         // Simulate async submit (replace with actual API/form service like Formspree or EmailJS)
         await new Promise(r => setTimeout(r, 1400));
@@ -125,31 +247,32 @@ export default function ContactPage() {
                                         <span style={{ display: 'block', marginBottom: '1rem', color: 'var(--orange)' }}><CheckCircle size={48} /></span>
                                         <h4 style={{ color: 'var(--navy)', marginBottom: '0.5rem' }}>Message Sent!</h4>
                                         <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
-                                            Thank you, {form.name}. We'll get back to you within 24 hours.
+                                            Thank you, {form.firstName} {form.lastName}. We'll get back to you within 24 hours.
                                         </p>
                                     </div>
                                 ) : (
-                                    <div>
+                                    <form onSubmit={handleSubmit}>
                                         <div className="form-row">
                                             <div className="form-group">
-                                                <label>Full Name <span style={{ color: 'var(--orange)' }}>*</span></label>
+                                                <label>First Name <span style={{ color: 'var(--orange)' }}>*</span></label>
                                                 <input
                                                     type="text"
-                                                    name="name"
-                                                    placeholder="Your full name"
-                                                    value={form.name}
+                                                    name="firstName"
+                                                    placeholder="First Name"
+                                                    value={form.firstName}
                                                     onChange={handleChange}
                                                     required
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>Company</label>
+                                                <label>Last Name <span style={{ color: 'var(--orange)' }}>*</span></label>
                                                 <input
                                                     type="text"
-                                                    name="company"
-                                                    placeholder="Your company name"
-                                                    value={form.company}
+                                                    name="lastName"
+                                                    placeholder="Last Name"
+                                                    value={form.lastName}
                                                     onChange={handleChange}
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -167,15 +290,31 @@ export default function ContactPage() {
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>Phone</label>
+                                                <label>Company</label>
                                                 <input
-                                                    type="tel"
-                                                    name="phone"
-                                                    placeholder="+91 XXXXX XXXXX"
-                                                    value={form.phone}
+                                                    type="text"
+                                                    name="company"
+                                                    placeholder="Your company name"
+                                                    value={form.company}
                                                     onChange={handleChange}
                                                 />
                                             </div>
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label>Phone <span style={{ color: 'var(--orange)' }}>*</span></label>
+                                            <PhoneInput
+                                                countrySelectComponent={CountrySelect}
+                                                defaultCountry="IN"
+                                                name="phone"
+                                                placeholder={phonePlaceholder}
+                                                maxLength={inputMaxLength}
+                                                value={form.phone}
+                                                onChange={(val) => setForm(prev => ({ ...prev, phone: val || '' }))}
+                                                onCountryChange={(country) => { if(country) setPhoneCountry(country); }}
+                                                limitMaxLength={true}
+                                                required
+                                            />
                                         </div>
 
                                         <div className="form-group">
@@ -203,7 +342,7 @@ export default function ContactPage() {
                                         </div>
 
                                         <button
-                                            onClick={handleSubmit}
+                                            type="submit"
                                             className="btn btn-primary"
                                             style={{ width: '100%', justifyContent: 'center', opacity: status === 'sending' ? 0.7 : 1 }}
                                             disabled={status === 'sending'}
@@ -214,7 +353,7 @@ export default function ContactPage() {
                                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem', textAlign: 'center' }}>
                                             To integrate with a real backend, replace the submit handler with Formspree, EmailJS, or a Next.js API route.
                                         </p>
-                                    </div>
+                                    </form>
                                 )}
                             </div>
                         </ScrollReveal>

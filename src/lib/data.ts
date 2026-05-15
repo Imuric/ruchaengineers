@@ -278,3 +278,51 @@ export const stats = [
     { num: '25+', label: 'Years Expertise' },
     { num: '6+', label: 'Case Studies' },
 ];
+
+export const testimonials = [
+    {
+        quote: "Rucha Engineers delivered our complex aluminium die with absolute precision and well within the tight 7-day deadline. Their attention to detail and FMEA-aligned tooling methodology ensured zero rejection during production.",
+        author: "Rahul Deshmukh",
+        company: "Mayura Steels Pvt. Ltd.",
+    },
+    {
+        quote: "The quality of the large-scale thermocol master patterns we received was outstanding. Their team's expertise with NX CAD and dedicated after-sales support makes them our preferred tooling partner.",
+        author: "Prakash Kulkarni",
+        company: "Caspro Metal Industries",
+    },
+    {
+        quote: "We have been sourcing SG Iron castings from Rucha Engineers for over two years. Their 'Right-First-Time' approach and consistent quality control have significantly improved our assembly line efficiency.",
+        author: "Amit Patel",
+        company: "LADA Laxmi Pumps",
+    },
+    {
+        quote: "Their wooden master patterns exhibit excellent craftsmanship. Even after hundreds of molding cycles, the patterns retain their dimensional stability. A truly reliable vendor.",
+        author: "Sanjay Shinde",
+        company: "Pinnacle Engineering",
+    },
+    {
+        quote: "Rucha Engineers has been pivotal in reducing our product development lead times. Their ability to deliver complex CI castings within our tight schedules is remarkable.",
+        author: "Vikram Bhosale",
+        company: "AutoCast Solutions",
+    },
+    {
+        quote: "We were struggling with porosity issues in our aluminium components until Rucha Engineers redesigned our dies with better gating systems. Their technical expertise is unmatched.",
+        author: "Nitin Jadhav",
+        company: "Aerospace Components Pvt. Ltd.",
+    },
+    {
+        quote: "From CAD design to final machining, Rucha Engineers provides a seamless end-to-end service. Their ISO-certified processes give us complete confidence in the quality of every batch.",
+        author: "Rakesh Menon",
+        company: "HeavyMach Industries",
+    },
+    {
+        quote: "Excellent response time and outstanding customer service. Their team is always willing to go the extra mile to accommodate our urgent pattern modification requests.",
+        author: "Pooja Sharma",
+        company: "Dynamic Foundries",
+    },
+    {
+        quote: "The surface finish on the aluminium dies we procured from Rucha Engineers was flawless. It significantly reduced our secondary machining costs. Highly recommended.",
+        author: "Anil Deshpande",
+        company: "Precision Tools India",
+    }
+];
