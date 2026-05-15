@@ -1,109 +1,40 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import ScrollReveal from '../../components/ScrollReveal';
 import { addresses, contacts, company } from '../../lib/data';
 import { Phone, Briefcase, MapPin, Clock, Globe, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
-import PhoneInput, { isValidPhoneNumber, getCountryCallingCode } from 'react-phone-number-input';
-import flags from 'react-phone-number-input/flags';
-import { getExampleNumber } from 'libphonenumber-js';
-import examples from 'libphonenumber-js/examples.mobile.json';
-import 'react-phone-number-input/style.css';
+
+/*
+ * TODO (Future Enhancement): Country-code phone input with flags & auto-formatting
+ * Packages needed:
+ *   npm install react-phone-number-input libphonenumber-js
+ * Key files to restore:
+ *   - imports: PhoneInput, isValidPhoneNumber, getCountryCallingCode (react-phone-number-input)
+ *              getExampleNumber, examples (libphonenumber-js)
+ *              flags (react-phone-number-input/flags)
+ *   - state:   phoneCountry, isDropdownOpen, dropdownRef
+ *   - logic:   CountrySelect component with SVG flags + phonePlaceholder generator
+ *   - jsx:     <PhoneInput countrySelectComponent={CountrySelect} limitMaxLength={true} ... />
+ */
 
 export default function ContactPage() {
     const [form, setForm] = useState({
         firstName: '', lastName: '', company: '', email: '', phone: '', subject: '', message: '',
     });
     const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
-    const [phoneCountry, setPhoneCountry] = useState('IN');
-    const dropdownRef = useRef<HTMLDivElement>(null);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-    // Calculate dynamic placeholder (e.g. XXXXX XXXXX)
-    let phonePlaceholder = 'Phone number';
-    let inputMaxLength: number | undefined = undefined;
-    
-    if (phoneCountry) {
-        try {
-            const ex = getExampleNumber(phoneCountry as any, examples as any);
-            if (ex) {
-                const intl = ex.formatInternational();
-                const cc = '+' + ex.countryCallingCode;
-                phonePlaceholder = intl.replace(cc, '').trim().replace(/\d/g, 'X');
-                inputMaxLength = phonePlaceholder.length;
-            }
-        } catch (e) {
-            // fallback
-        }
-    }
-
-    // Custom Country Select Dropdown
-    const CountrySelect = ({ value, onChange, options }: any) => {
-        useEffect(() => {
-            const handleClickOutside = (e: MouseEvent) => {
-                if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-                    setIsDropdownOpen(false);
-                }
-            };
-            document.addEventListener('mousedown', handleClickOutside);
-            return () => document.removeEventListener('mousedown', handleClickOutside);
-        }, []);
-
-        return (
-            <div ref={dropdownRef} style={{ position: 'relative', display: 'flex', alignItems: 'center', height: '100%' }}>
-                <div 
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', height: '100%', padding: '0 0.75rem', background: 'var(--cream)', borderTopLeftRadius: 'var(--radius-md)', borderBottomLeftRadius: 'var(--radius-md)', borderRight: '1.5px solid var(--border)' }}
-                >
-                    <span style={{ fontSize: '0.95rem', color: 'var(--navy)', fontWeight: 500, fontFamily: 'var(--font-mono)' }}>
-                        {value ? `(+${getCountryCallingCode(value)})` : 'Code'}
-                    </span>
-                    <div className="PhoneInputCountrySelectArrow" style={{ marginLeft: '0.5rem', transform: isDropdownOpen ? 'rotate(-135deg)' : 'rotate(45deg)', transition: 'transform 0.2s' }} />
-                </div>
-
-                {isDropdownOpen && (
-                    <ul style={{ 
-                        position: 'absolute', top: '100%', left: 0, width: '320px', maxHeight: '300px', overflowY: 'auto', 
-                        background: '#fff', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', 
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)', zIndex: 100, listStyle: 'none', padding: 0, margin: '0.5rem 0 0 0'
-                    }}>
-                        {options.map((option: any) => {
-                            if (!option.value) return null;
-                            const Flag = flags[option.value as keyof typeof flags];
-                            return (
-                                <li 
-                                    key={option.value}
-                                    onClick={() => {
-                                        onChange(option.value);
-                                        setPhoneCountry(option.value);
-                                        setIsDropdownOpen(false);
-                                    }}
-                                    style={{
-                                        padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer',
-                                        background: value === option.value ? 'var(--orange-pale)' : 'transparent',
-                                        borderBottom: '1px solid var(--border)'
-                                    }}
-                                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--cream)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.background = value === option.value ? 'var(--orange-pale)' : 'transparent'}
-                                >
-                                    {Flag && <div style={{ width: '24px', height: '16px', display: 'flex', border: '1px solid #e2e8f0', overflow: 'hidden' }}><Flag /></div>}
-                                    <span style={{ flex: 1, color: 'var(--navy)', fontSize: '0.9rem' }}>{option.label}</span>
-                                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)' }}>(+{getCountryCallingCode(option.value)})</span>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                )}
-            </div>
-        );
-    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        
+
         let processedValue = value;
         // Auto-capitalize first letter of every word for First Name and Last Name
         if (name === 'firstName' || name === 'lastName') {
             processedValue = value.replace(/\b\w/g, char => char.toUpperCase());
+        }
+
+        // Phone: only allow digits and the '+' symbol
+        if (name === 'phone') {
+            processedValue = value.replace(/[^\d+]/g, '');
         }
 
         setForm(prev => ({ ...prev, [name]: processedValue }));
@@ -112,13 +43,13 @@ export default function ContactPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 1. Sanitization: Trim all inputs to remove leading/trailing spaces
+        // 1. Sanitization: Trim all inputs
         const sanitizedForm = {
             firstName: form.firstName.trim(),
             lastName: form.lastName.trim(),
             company: form.company.trim(),
             email: form.email.trim(),
-            phone: form.phone ? form.phone.trim() : '',
+            phone: form.phone.trim(),
             subject: form.subject,
             message: form.message.trim(),
         };
@@ -136,14 +67,15 @@ export default function ContactPage() {
             return;
         }
 
-        // 4. Validation: Strict Phone format using react-phone-number-input
-        if (sanitizedForm.phone && !isValidPhoneNumber(sanitizedForm.phone)) {
-            alert('Please enter a valid phone number for the selected country.');
+        // 4. Validation: Phone — allow digits, spaces, +, -, (), min 7 digits
+        const digitsOnly = sanitizedForm.phone.replace(/\D/g, '');
+        if (!/^[0-9+\-\s()]*$/.test(sanitizedForm.phone) || digitsOnly.length < 7) {
+            alert('Please enter a valid phone number (minimum 7 digits).');
             return;
         }
 
         setStatus('sending');
-        // Simulate async submit (replace with actual API/form service like Formspree or EmailJS)
+        // Replace with Formspree / EmailJS / Next.js API route
         await new Promise(r => setTimeout(r, 1400));
         setStatus('sent');
     };
@@ -252,6 +184,7 @@ export default function ContactPage() {
                                     </div>
                                 ) : (
                                     <form onSubmit={handleSubmit}>
+                                        {/* Row 1: First Name + Last Name */}
                                         <div className="form-row">
                                             <div className="form-group">
                                                 <label>First Name <span style={{ color: 'var(--orange)' }}>*</span></label>
@@ -277,6 +210,7 @@ export default function ContactPage() {
                                             </div>
                                         </div>
 
+                                        {/* Row 2: Email + Company */}
                                         <div className="form-row">
                                             <div className="form-group">
                                                 <label>Email <span style={{ color: 'var(--orange)' }}>*</span></label>
@@ -301,18 +235,15 @@ export default function ContactPage() {
                                             </div>
                                         </div>
 
+                                        {/* Row 3: Phone (full width) */}
                                         <div className="form-group">
                                             <label>Phone <span style={{ color: 'var(--orange)' }}>*</span></label>
-                                            <PhoneInput
-                                                countrySelectComponent={CountrySelect}
-                                                defaultCountry="IN"
+                                            <input
+                                                type="tel"
                                                 name="phone"
-                                                placeholder={phonePlaceholder}
-                                                maxLength={inputMaxLength}
+                                                placeholder="+91 XXXXX XXXXX"
                                                 value={form.phone}
-                                                onChange={(val) => setForm(prev => ({ ...prev, phone: val || '' }))}
-                                                onCountryChange={(country) => { if(country) setPhoneCountry(country); }}
-                                                limitMaxLength={true}
+                                                onChange={handleChange}
                                                 required
                                             />
                                         </div>
@@ -361,7 +292,7 @@ export default function ContactPage() {
                 </div>
             </section>
 
-            {/* Map placeholder */}
+            {/* Map */}
             <section className="section section--alt">
                 <div className="container">
                     <ScrollReveal>
