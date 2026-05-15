@@ -29,17 +29,11 @@ export default function Navbar() {
 
     return (
         <>
-            <div style={{
-                position: 'fixed', top: 0, left: 0, right: 0, height: '36px',
-                background: 'var(--orange)', color: 'var(--white)',
-                display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem',
-                fontSize: '0.75rem', fontFamily: 'var(--font-mono)', zIndex: 101,
-                letterSpacing: '0.04em'
-            }}>
+            <div className="announcement-bar">
                 <span>GSTIN: {company.gstin}</span>
                 <span>Email: {contacts.technical.email}</span>
             </div>
-            <nav className={`nav ${scrolled ? 'nav--scrolled' : 'nav--transparent'}`} style={{ top: '36px' }}>
+            <nav className={`nav ${scrolled ? 'nav--scrolled' : 'nav--transparent'}`}>
                 <div className="nav__inner">
                     {/* Logo */}
                     <Link href="/" className="nav__logo">
@@ -89,7 +83,7 @@ export default function Navbar() {
             </nav>
 
             {/* Mobile overlay */}
-            <nav className={`nav__mobile ${mobileOpen ? 'open' : ''}`} style={{ top: '108px' }}>
+            <nav className={`nav__mobile ${mobileOpen ? 'open' : ''}`}>
                 {navLinks.map(({ href, label }) => (
                     <Link key={href} href={href}>
                         {label}

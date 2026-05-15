@@ -39,69 +39,25 @@ export default function CaseStudiesPage() {
                         {caseStudies.map((cs, i) => (
                             <ScrollReveal delay={i * 80} key={i}>
                                 <Link href={`/case-studies/${cs.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
-                                    <div 
-                                        className="case-study-row"
-                                    style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: i % 2 === 0 ? 'auto 1fr' : '1fr auto',
-                                        gap: '2rem',
-                                        background: 'var(--white)',
-                                        borderRadius: 'var(--radius-xl)',
-                                        border: '1px solid var(--border)',
-                                        overflow: 'hidden',
-                                        transition: 'box-shadow 350ms var(--ease-smooth)',
-                                    }}
-                                >
-                                    {/* Number block */}
-                                    <div style={{
-                                        background: i % 2 === 0 ? 'var(--navy)' : 'var(--orange)',
-                                        padding: '2.5rem',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        minWidth: '160px',
-                                        order: i % 2 === 0 ? 0 : 1,
-                                    }}>
-                                        <span style={{
-                                            fontFamily: 'var(--font-display)',
-                                            fontSize: '0.7rem',
-                                            letterSpacing: '0.15em',
-                                            color: i % 2 === 0 ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.7)',
-                                            textTransform: 'uppercase',
-                                            marginBottom: '0.5rem',
-                                        }}>
-                                            Case Study
-                                        </span>
-                                        <span style={{
-                                            fontFamily: 'var(--font-display)',
-                                            fontSize: '2.75rem',
-                                            fontWeight: 700,
-                                            color: 'white',
-                                            lineHeight: 1,
-                                        }}>
-                                            {String(i + 1).padStart(2, '0')}
-                                        </span>
-                                    </div>
-
-                                    {/* Content block */}
-                                    <div style={{ padding: '2.5rem', order: i % 2 === 0 ? 1 : 0 }}>
-                                        <div className="label" style={{ marginBottom: '0.5rem' }}>
-                                            Case Study {cs.number}
+                                    <div className={`case-study-row ${i % 2 === 0 ? 'even' : 'odd'}`}>
+                                        {/* Number block */}
+                                        <div className="case-study-row__num">
+                                            <span className="case-study-row__label">
+                                                Case Study
+                                            </span>
+                                            <span className="case-study-row__value">
+                                                {String(i + 1).padStart(2, '0')}
+                                            </span>
                                         </div>
-                                        <h3 style={{
-                                            fontFamily: 'var(--font-display)',
-                                            fontSize: 'clamp(1.125rem, 2.5vw, 1.5rem)',
-                                            color: 'var(--navy)',
-                                            marginBottom: '1rem',
-                                            fontWeight: 600,
-                                        }}>
-                                            {cs.title}
-                                        </h3>
-                                        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.75, maxWidth: '560px', margin: 0 }}>
-                                            {cs.body}
-                                        </p>
-                                    </div>
+
+                                        {/* Content block */}
+                                        <div className="case-study-row__content">
+                                            <div className="label" style={{ marginBottom: '0.5rem' }}>
+                                                Case Study {cs.number}
+                                            </div>
+                                            <h3>{cs.title}</h3>
+                                            <p>{cs.body}</p>
+                                        </div>
                                     </div>
                                 </Link>
                             </ScrollReveal>

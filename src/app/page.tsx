@@ -203,9 +203,6 @@ export default function HomePage() {
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                   <Link href="/contact" className="btn btn-primary">Contact Us</Link>
-                  <a href="tel:+917720840001" className="btn btn-outline">
-                    <Phone size={16} /> +91 77208 40001
-                  </a>
                 </div>
               </div>
             </div>
